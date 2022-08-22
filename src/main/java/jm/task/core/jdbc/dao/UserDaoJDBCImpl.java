@@ -14,21 +14,24 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String sql = "CREATE TABLE USERS (ID BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY," +
-                "NAME VARCHAR(45) NOT NULL, LASTNAME VARCHAR(45) NOT NULL , AGE INT NOT NULL)";
+        String sql = "CREATE TABLE IF NOT EXISTS USERS" +
+                "(ID BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY," +
+                "NAME VARCHAR(45) NOT NULL," +
+                "LASTNAME VARCHAR(45) NOT NULL ," +
+                "AGE INT NOT NULL)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.executeUpdate();
-        } catch (SQLException ignored) {
-
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     public void dropUsersTable() {
-        String sql = "DROP TABLE USERS";
+        String sql = "DROP TABLE IF EXISTS USERS";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.executeUpdate();
-        } catch (SQLException ignored) {
-
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -40,8 +43,8 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setByte(3, age);
 
             preparedStatement.executeUpdate();
-        } catch (SQLException ignored) {
-
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -50,16 +53,16 @@ public class UserDaoJDBCImpl implements UserDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-        } catch (SQLException ignored) {
-
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT ID, NAME, LASTNAME, AGE FROM USERS";
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getLong("ID"));
@@ -69,8 +72,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
                 userList.add(user);
             }
-        } catch (SQLException ignored) {
-
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return userList;
     }

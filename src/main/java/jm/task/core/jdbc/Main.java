@@ -6,7 +6,6 @@ import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 public class Main {
     public static void main(String[] args) {
             UserDao userDao = new UserDaoJDBCImpl();
-
             userDao.createUsersTable();
 
             userDao.saveUser("Ivan", "Ivanov", (byte) 30);
